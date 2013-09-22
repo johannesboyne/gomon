@@ -1,0 +1,54 @@
+#!/usr/bin/env node
+var fs          = require('fs');
+var spawn       = require('child_process').spawn;
+var exec        = require('child_process').exec;
+var argv        = require('minimist')(process.argv.slice(2));
+var watch       = require('watch');
+var colorsTmpl  = require('colors');
+var gorun;
+
+// check
+if (argv._.length <= 0 || argv._ > 1) {
+  console.error('Use gomon like:', '\ngomon myfile.go'.green, '\nand not without any or multiple arguments!'.red);
+  process.exit(2);
+  return;
+}
+
+// setup
+var maindir = argv._[0].split("/");
+maindir.pop();
+maindir = maindir.join('/');
+maindir = maindir.length <= 0 ? process.cwd() : maindir;
+var processName = argv._[0].split("/").pop().split(".")[0];
+var path = argv._[0];
+
+// setting the GOPATH
+process.env.GOPATH = process.cwd();
+
+watch.createMonitor(maindir, function (monitor) {
+  monitor.files['.go'];
+  monitor.on("created", killAll);
+  monitor.on("changed", killAll);
+  monitor.on("removed", killAll);
+});
+
+function run () {
+  console.log('go run'.green, path);
+  
+  gorun = spawn('go', ['run', path]);
+  gorun.stdout.on('data', function (data) {
+    console.log('stdout: ' + data);
+  });
+  gorun.stderr.on('data', function (data) {
+    console.log('stderr: ' + data);
+  });
+}
+
+function killAll () {
+  console.log('>> restart'.red);
+  exec('killall '+processName, function (err, stdout, stderr) {
+    run();
+  });
+}
+
+run();
