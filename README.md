@@ -6,3 +6,7 @@ It is a bit like [nodemon](http://remy.github.io/nodemon/) just for GO or [Alex'
 It sets the `$GOPATH` for you and you can install it via `npm install -g go-mon` (or like a pro `npm i -g go-mon`).
 
 Then just run a go programm like `gomon staticsmoothie.go`!
+
+## Contributors
+
+* [ruandao](https://github.com/ruandao) 
