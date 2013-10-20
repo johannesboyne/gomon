@@ -23,7 +23,7 @@ var processName = argv._[0].split("/").pop().split(".")[0];
 var path = argv._[0];
 
 // setting the GOPATH
-process.env.GOPATH = process.cwd();
+process.env.GOPATH = process.cwd() + (process.env.GOPATH && ":" + process.env.GOPATH || "");
 
 watch.createMonitor(maindir, function (monitor) {
   monitor.files['.go'];
