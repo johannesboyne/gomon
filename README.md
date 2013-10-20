@@ -9,4 +9,4 @@ Then just run a go programm like `gomon staticsmoothie.go`!
 
 ## Contributors
 
-* [ruandao](https://github.com/ruandao) 
+- [ruandao](https://github.com/ruandao) 
