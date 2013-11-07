@@ -10,3 +10,5 @@ Then just run a go programm like `gomon staticsmoothie.go`!
 ## Contributors
 
 - [ruandao](https://github.com/ruandao) 
+
+[![endorse](https://api.coderwall.com/johannesboyne/endorsecount.png)](https://coderwall.com/johannesboyne)
