@@ -60,7 +60,7 @@ function run () {
     //now that we have our binary, we can run that file.
     //This gives us a handle on the Pid we want (just running 'go run' spawns a child process running out of a temp dir)
     var runCommand = './' + BINARY_FILE
-    gorun = spawn('./ProcManager', procArgs, { stdio: 'inherit' });
+    gorun = spawn(runCommand, procArgs, { stdio: 'inherit' });
   });
 }
 
