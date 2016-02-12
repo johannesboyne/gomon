@@ -41,7 +41,6 @@ function run () {
   //instead of running 'go run', we are going to split this into two operations
   //first, let's run go build and compile into a file called "gomon_spawn"
   var buildCommand = 'go build -o ' + BINARY_FILE
-  // console.log(buildCommand.green);
 
   exec(buildCommand, function (err, stdout, stderr) {
     if (err) {
@@ -61,21 +60,21 @@ function run () {
     //now that we have our binary, we can run that file.
     //This gives us a handle on the Pid we want (just running 'go run' spawns a child process running out of a temp dir)
     var runCommand = './' + BINARY_FILE
-    // console.log((runCommand + ' ' + procArgs.join(' ')).green);
     gorun = spawn('./ProcManager', procArgs, { stdio: 'inherit' });
   });
 }
 
-function conditionalKill(thing) {
+function conditionalKill(reason) {
   return function(f){
     if(!f.endsWith(BINARY_FILE)){
+      var message = '>> restarting due to ' +  reason + ' file: ' + f;
+      console.log(message.red);
       killAll()
     }
   }
 }
 
 function killAll () {
-  console.log('>> restart'.red);
   exec('kill '+gorun.pid, function (err, stdout, stderr) {
     run();
   });
