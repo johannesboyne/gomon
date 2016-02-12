@@ -7,6 +7,9 @@ var args        = require('minimist')(process.argv.slice(2))._;
 var watch       = require('watch');
 var colorsTmpl  = require('colors');
 var gorun;
+var goFile;
+var procArgs;
+var BINARY_FILE = "gomon_spawn";
 
 // Make sure we have arguments
 if (args.length <= 0 || args > 1) {
@@ -19,34 +22,60 @@ if (args.length <= 0 || args > 1) {
   process.exit(2);
 }
 
+//entry to go program
+goFile = args[0]
+procArgs = process.argv.slice(3)
+
 // Discover work path
-var firstArgDir = path.dirname(args[0]);
+var firstArgDir = path.dirname(goFile);
 var mainDir = firstArgDir === '.' ? process.cwd() : firstArgDir;
-var processName = path.basename(args[0].name, '.go');
 
-
-watch.createMonitor(mainDir, function (monitor) {
-  monitor.files['.go'];
-  monitor.on("created", killAll);
-  monitor.on("changed", killAll);
-  monitor.on("removed", killAll);
+watch.createMonitor(mainDir, {ignoreDotFiles: true}, function (monitor) {
+  monitor.on("created", conditionalKill("created"));
+  monitor.on("changed", conditionalKill("changed"));
+  monitor.on("removed", conditionalKill("removed"));
 });
 
 function run () {
-  console.log('go run'.green, args.join(', '));
+  console.log('>> gomon'.green);
+  //instead of running 'go run', we are going to split this into two operations
+  //first, let's run go build and compile into a file called "gomon_spawn"
+  var buildCommand = 'go build -o ' + BINARY_FILE
 
-  gorun = spawn('go', ['run'].concat(args));
-  gorun.stdout.on('data', function (data) {
-    console.log('stdout: ' + data);
-  });
-  gorun.stderr.on('data', function (data) {
-    console.log('stderr: ' + data);
+  exec(buildCommand, function (err, stdout, stderr) {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    if (stdout) {
+      //go build should not generate any output, so if something is here, it's a compile error and we need to bail
+      console.log(stdout);
+      return
+    }
+    if (stderr) {
+      console.error(stderr);
+      return
+    }
+
+    //now that we have our binary, we can run that file.
+    //This gives us a handle on the Pid we want (just running 'go run' spawns a child process running out of a temp dir)
+    var runCommand = './' + BINARY_FILE
+    gorun = spawn('./ProcManager', procArgs, { stdio: 'inherit' });
   });
 }
 
+function conditionalKill(reason) {
+  return function(f){
+    if(!f.endsWith(BINARY_FILE)){
+      var message = '>> restarting due to ' +  reason + ' file: ' + f;
+      console.log(message.red);
+      killAll()
+    }
+  }
+}
+
 function killAll () {
-  console.log('>> restart'.red);
-  exec('killall '+processName, function (err, stdout, stderr) {
+  exec('kill '+gorun.pid, function (err, stdout, stderr) {
     run();
   });
 }
