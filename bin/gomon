@@ -75,9 +75,12 @@ function conditionalKill(reason) {
 }
 
 function killAll () {
-  exec('kill '+gorun.pid, function (err, stdout, stderr) {
+  if (!gorun)
     run();
-  });
+  else
+    exec('kill '+gorun.pid, function (err, stdout, stderr) {
+      run();
+    });
 }
 
 run();
