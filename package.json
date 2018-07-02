@@ -1,6 +1,6 @@
 {
   "name": "go-mon",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Simple monitor script for use during development of a golang app.",
   "main": "bin/gomon",
   "bin": {
