@@ -1,6 +1,6 @@
 {
   "name": "go-mon",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Simple monitor script for use during development of a golang app.",
   "main": "bin/gomon",
   "bin": {
@@ -20,6 +20,11 @@
     "reload"
   ],
   "author": "Johannes Boyne <johannes@boyne.de>",
+  "contributors": [
+    "Alexis Viscogliosi (https://github.com/AlexisVisco)",
+    "Chris Langager (https://github.com/Khelldar)",
+    "ruandao (https://github.com/ruandao)"
+  ],
   "license": "MIT",
   "dependencies": {
     "minimist": "0.0.5",

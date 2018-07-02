@@ -9,6 +9,7 @@ Then just run a go programm like `gomon staticsmoothie.go`!
 
 ## Contributors
 
+- [AlexisVisco](https://github.com/AlexisVisco)
 - [ruandao](https://github.com/ruandao)
 - [kiasaki](https://github.com/kiasaki)
 - [Khelldar](https://github.com/Khelldar)
